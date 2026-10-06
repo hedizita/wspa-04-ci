@@ -7,7 +7,7 @@ export default defineConfig({
             PGPORT:"5432",
             PGUSER:"app",
             PGPASSWORD:"app_pw",
-            PGDATABASE:"app_test_db"
+            PGDATABASE:"app_db"
         },
         fileParallelism: false
     }

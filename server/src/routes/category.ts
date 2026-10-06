@@ -7,7 +7,7 @@ import {
 } from "../store/category.js";
 import type { NewCategory } from "../types/category.js";
 
-export function parseNewCategory(body: unknown): NewCategory | null {
+function parseNewCategory(body: unknown): NewCategory | null {
 	const { name } = body as Partial<NewCategory>;
 
 	if (typeof name !== "string") {
