@@ -87,3 +87,9 @@ npm run lint:fix  # same, but apply the fixes it can make automatically
 ```
 
 `lint:fix` won't touch anything it can't fix safely (e.g. an unused variable) — it'll still report those for you to fix by hand.
+
+## Testing
+Ensure the database is running:
+`docker compose up -d db`
+Run tests from the server folder:
+`npm test`
