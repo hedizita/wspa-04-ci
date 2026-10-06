@@ -4,7 +4,8 @@ Starting point for the Web Software Production course project.
 This project will grow week by week.
 
 - `client/` — React + Vite + TypeScript frontend
-- `server/` — Node + Express + TypeScript backend (in-memory storage)
+- `server/` — Node + Express + TypeScript backend (PostgreSQL database)
+- `db/` — PostgreSQL database initialization scripts
 
 Each part is an independent npm project with its own `node_modules`, and its own Biome config for linting/formatting.
 
@@ -25,20 +26,22 @@ src/
   app.ts                     # configures the Express app (middleware + routes)
   server.ts                  # entry point: starts listening
   types/expense.ts           # Expense / NewExpense types
-  store/expense.ts           # in-memory storage
+  store/expense.ts           # expense store
   routes/expense.ts          # GET/POST/PUT/DELETE handlers, mounted at /api/expenses
 ```
 
-Storage is in-memory only (see `server/src/store/expense.ts`) — data resets every time the server restarts, and it isn't shared across multiple server instances. There's no database yet.
+Storage is backed by PostgreSQL (see `server/src/db/pool.ts`), configured via environment variables.
+Available endpoints, under `/api/expenses` and `/api/categories`:
 
-Available endpoints, all under `/api/expenses`:
-
-| Method | Path             | Description                    |
-| ------ | ---------------- | ------------------------------ |
-| GET    | `/api/expenses`     | List all expenses           |
-| POST   | `/api/expenses`     | Create an expense           |
-| PUT    | `/api/expenses/:id` | Update an expense           |
-| DELETE | `/api/expenses/:id` | Delete an expense           |
+| Method | Path                  | Description               |
+| ------ | ----------------------| --------------------------|
+| GET    | `/api/expenses`       | List all expenses         |
+| POST   | `/api/expenses`       | Create an expense         |
+| PUT    | `/api/expenses/:id`   | Update an expense         |
+| DELETE | `/api/expenses/:id`   | Delete an expense         |
+| GET    | `/api/categories`     | List all categories       |
+| POST   | `/api/categories`     | Create a category         |
+| DELETE | `/api/categories/:id` | Delete a category         |
 
 `POST`/`PUT` expect a JSON body with `description` (string), `amount` (number), and `date` (ISO string, e.g. `2026-08-01`); a missing/wrong-typed field returns `400`. Updating or deleting an unknown `id` returns `404`.
 
@@ -90,6 +93,10 @@ npm run lint:fix  # same, but apply the fixes it can make automatically
 
 ## Testing
 Ensure the database is running:
-`docker compose up -d db`
-Run tests from the server folder:
+`docker compose up -d`
+
+Run tests from the server folder: (runs against `app_test_db` from `server/`):
 `npm test`
+
+Run e2e tests: (runs Playwright from `client/`):
+`npm run test:e2e`
