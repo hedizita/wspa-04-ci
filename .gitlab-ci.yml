@@ -49,10 +49,9 @@ test-server:
     PGUSER: app
     PGPASSWORD: app_pw
     PGDATABASE: app_test_db
-  before_script:
-    - apt-get update && apt-get install -y postgresql-client
-    - PGPASSWORD=$POSTGRES_PASSWORD psql -h $PGHOST -U $POSTGRES_USER -d $POSTGRES_DB -f db/init/001-schema.sql
   script:
+    - apt-get update && apt-get install -y postgresql-client
+    - psql -h postgres -U app -d app_test_db -f db/init/001-schema.sql
     - cd server
     - npm ci
     - npm test
