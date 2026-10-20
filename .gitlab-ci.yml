@@ -1,6 +1,7 @@
 stages:
   - lint
   - build
+  - test
 
 # Lint the client.
 lint-client:
@@ -34,3 +35,22 @@ build-server:
     - cd server
     - npm ci
     - npm run build
+
+test-server:
+  stage: test
+  image: node:22
+  services:
+    - postgres:16
+  variables:
+    POSTGRES_DB: app_test_db
+    POSTGRES_USER: app
+    POSTGRES_PASSWORD: app_pw
+    PGHOST: postgres
+    PGPORT: "5432"
+    PGUSER: app
+    PGPASSWORD: app_pw
+    PGDATABASE: app_test_db
+  script:
+    - cd server
+    - npm ci
+    - npm test
