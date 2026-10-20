@@ -2,6 +2,7 @@ stages:
   - lint
   - build
 
+# Lint the client.
 lint-client:
   stage: lint
   image: node:22
@@ -10,10 +11,26 @@ lint-client:
     - npm ci
     - npm run lint
 
+lint-server:
+  stage: lint
+  image: node:22
+  script:
+    - cd server
+    - npm ci
+    - npm run lint
+
 build-client:
   stage: build
   image: node:22
   script:
     - cd client
+    - npm ci
+    - npm run build
+
+build-server:
+  stage: build
+  image: node:22
+  script:
+    - cd server
     - npm ci
     - npm run build
