@@ -4,6 +4,7 @@ stages:
   - test
   - e2e
   - publish
+  - deploy
 
 lint-client:
   stage: lint
@@ -121,3 +122,23 @@ publish-client:
     - docker tag "$IMAGE:$CI_COMMIT_SHORT_SHA" "$IMAGE:$VERSION"
     - docker push "$IMAGE:$CI_COMMIT_SHORT_SHA"
     - docker push "$IMAGE:$VERSION"
+
+deploy-staging:
+  stage: deploy
+  image: docker:28.0
+  services:
+    - docker:28.0-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE_SERVER: $CI_REGISTRY_IMAGE/server:$CI_COMMIT_SHORT_SHA
+    IMAGE_CLIENT: $CI_REGISTRY_IMAGE/client:$CI_COMMIT_SHORT_SHA
+    API_URL: http://localhost:3001
+  before_script:
+    - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker compose -f compose.staging.yaml up -d
+    - sleep 10
+    - docker compose -f compose.staging.yaml ps
+    - docker compose -f compose.staging.yaml logs
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
