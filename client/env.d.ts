@@ -1,3 +1,3 @@
 interface Window {
-  __ENV__?: { API_URL?: string };
+	__ENV__?: { API_URL?: string };
 }
