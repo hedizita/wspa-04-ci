@@ -17,6 +17,7 @@ services:
   server:
     image: ${IMAGE_SERVER}
     restart: unless-stopped
+    command: ["node", "dist/server.js"]
     depends_on:
       db:
         condition: service_healthy
